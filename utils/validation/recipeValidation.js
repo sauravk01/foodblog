@@ -12,3 +12,13 @@ export const recipeDescriptionValidation = (req, res) => {
   )
     return res.status(400).json({ err: `item details can not be left blank.` });
 };
+
+export const recipeInstructionValidation = (req, res) => {
+  if (
+    !req.body.recipeId ||
+    !req.file ||
+    // !req.body.orderNumber ||
+    !req.body.instruction
+  )
+    return res.status(400).json({ err: `item details can not be left blank.` });
+};

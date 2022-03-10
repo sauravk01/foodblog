@@ -5,7 +5,7 @@ import RDescripton from "./RDescripton";
 const RecipeDescription = () => {
   const { state } = useContext(RecipeContext);
   const { rTitle, rDescriptions } = state;
-  console.log("desc", state.rDescriptions);
+  // console.log("desc", state.rDescriptions);
 
   return (
     <>

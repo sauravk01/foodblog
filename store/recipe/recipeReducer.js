@@ -20,6 +20,11 @@ const reducers = (state, action) => {
         rServes: action.payload,
       };
       break;
+    case ACTIONS.RInstruction:
+      return {
+        ...state,
+        rInstructions: action.payload,
+      };
     default:
       return state;
   }

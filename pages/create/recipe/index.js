@@ -1,7 +1,8 @@
 import { getSession } from "next-auth/react";
 import { useState } from "react/cjs/react.development";
 import RecipeDescription from "../../../components/recipe/RecipeDescription";
-import RecipeServes from "../../../components/recipe/RecipeServes";
+import RInstructions from "../../../components/recipe/RecipeInstructions/RInstructions";
+import RecipeServes from "../../../components/recipe/RecipeServes/RecipeServes";
 import RecipeTitle from "../../../components/recipe/title";
 import { RecipeProvider } from "../../../store/recipe/recipeGlobalState";
 import { getData } from "../../../utils/fetchData";
@@ -27,6 +28,8 @@ const index = ({ subCategories }) => {
         <RecipeDescription />
         <hr />
         <RecipeServes />
+        <hr />
+        <RInstructions />
         <hr />
       </RecipeProvider>
     </>

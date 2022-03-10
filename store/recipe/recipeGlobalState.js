@@ -8,6 +8,7 @@ import reducers from "./recipeReducer";
 export const createRecipeStorageName = "createRecipeStorageName";
 export const createRecipeDescriptionName = "createRecipeDescriptionName";
 export const createRecipeServesName = "createRecipeServesName";
+export const createRecipeInstructionName = "createRecipeInstructionName";
 export const RecipeContext = createContext();
 
 export const RecipeProvider = ({ children }) => {
@@ -15,10 +16,11 @@ export const RecipeProvider = ({ children }) => {
     rTitle: {},
     rDescriptions: [],
     rServes: {},
+    rInstructions: [],
   };
   const [state, dispatch] = useReducer(reducers, initialState);
-  console.log("state", state);
-  const { rTitle, rDescriptions, rServes } = state;
+  // console.log("state", state);
+  const { rTitle, rDescriptions, rServes, rInstructions } = state;
 
   useEffect(() => {
     gettingLocalStorage(createRecipeStorageName, {
@@ -33,13 +35,18 @@ export const RecipeProvider = ({ children }) => {
       dispatch,
       action: ACTIONS.RServes,
     });
+    gettingLocalStorage(createRecipeInstructionName, {
+      dispatch,
+      action: ACTIONS.RInstruction,
+    });
   }, []);
 
   useEffect(() => {
     settingLocalStorage(createRecipeStorageName, rTitle);
     settingLocalStorage(createRecipeDescriptionName, rDescriptions);
     settingLocalStorage(createRecipeServesName, rServes);
-  }, [rTitle, rDescriptions, rServes]);
+    settingLocalStorage(createRecipeInstructionName, rInstructions);
+  }, [rTitle, rDescriptions, rServes, rInstructions]);
 
   return (
     <RecipeContext.Provider value={{ state, dispatch }}>

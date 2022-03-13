@@ -1,4 +1,5 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useState } from "react/cjs/react.development";
 import { RecipeContext } from "../../store/recipe/recipeGlobalState";
 import RDescripton from "./RDescripton";
 
@@ -6,7 +7,8 @@ const RecipeDescription = () => {
   const { state } = useContext(RecipeContext);
   const { rTitle, rDescriptions } = state;
   // console.log("desc", state.rDescriptions);
-
+  const [show, setShow] = useState(false);
+  console.log("load", show);
   return (
     <>
       <div>RecipeDescriptions</div>
@@ -29,7 +31,12 @@ const RecipeDescription = () => {
         <h5>No Descriptions Yet</h5>
       )}
       <hr />
-      {rTitle ? <RDescripton /> : <h5>Please submit the title first</h5>}
+      {rTitle ? (
+        <button onClick={() => setShow(!show)}>Show Editor</button>
+      ) : (
+        <h5>Please submit the title first</h5>
+      )}
+      {show === true && <RDescripton />}
     </>
   );
 };

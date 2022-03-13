@@ -7,23 +7,12 @@ import RecipeTitle from "../../../components/recipe/title";
 import { RecipeProvider } from "../../../store/recipe/recipeGlobalState";
 import { getData } from "../../../utils/fetchData";
 
-const initialState = {
-  title: "",
-  subCategory: "",
-  themeTitleRecipe: "",
-};
 const index = ({ subCategories }) => {
-  const [recipeValues, setRecipeValues] = useState(initialState);
-
   return (
     <>
       <RecipeProvider>
         <div>Recipe Page</div>
-        <RecipeTitle
-          recipeValues={recipeValues}
-          setRecipeValues={setRecipeValues}
-          subCategories={subCategories}
-        />
+        <RecipeTitle subCategories={subCategories} />
         <hr />
         <RecipeDescription />
         <hr />

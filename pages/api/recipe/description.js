@@ -30,7 +30,8 @@ const handler = nc({
   .use(upload.single("image"))
   .post(async (req, res) => {
     const recipeDescription = JSON.parse(JSON.stringify(req.body));
-    console.log("request", req.body);
+    const description = JSON.parse(recipeDescription.description);
+    console.log("description", description);
 
     try {
       sessionProvider(req);
@@ -40,6 +41,7 @@ const handler = nc({
 
       const newDescription = new Description({
         ...recipeDescription,
+        description,
         image: url,
       });
       await newDescription.save();

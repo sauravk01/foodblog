@@ -3,28 +3,36 @@ import { useRef, useState, useContext } from "react";
 import { ACTIONS } from "../../store/recipe/recipeActions";
 import { RecipeContext } from "../../store/recipe/recipeGlobalState";
 import { postData } from "../../utils/fetchData";
+
 import {
   deleteImage,
   ImageUploadHandler,
 } from "../../utils/imageHandler/imageUploadHandler";
+import Editor from "../editor/EditorJS";
 
 const RDescripton = () => {
   const { state, dispatch } = useContext(RecipeContext);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(null);
   const [images, setImages] = useState([]);
   const [orderNumber, setOrderNumber] = useState(0);
   const { data: session } = useSession();
   const ref = useRef();
   const { rTitle, rDescriptions } = state;
-  // console.log("state", state);
+
   const createRecipeDescription = async (e) => {
     e.preventDefault();
+    let descriptions = JSON.stringify(description.blocks);
     const formData = new FormData();
 
     for (const file of images) {
       formData.append(`image`, file);
     }
-    formData.append("description", description);
+
+    formData.append("description", descriptions);
+
+    formData.append("time", description.time);
+    formData.append("version", description.version);
+
     //recipe title from the state or localStorage
     formData.append("recipeId", rTitle._id);
     if (!orderNumber === 0) {
@@ -38,12 +46,6 @@ const RDescripton = () => {
     );
 
     console.log("res", res);
-    if (res.msg == "success") {
-      dispatch({
-        type: ACTIONS.RDescription,
-        payload: [...rDescriptions, res.newDescription],
-      });
-    }
   };
 
   return (
@@ -51,11 +53,7 @@ const RDescripton = () => {
       <form onSubmit={createRecipeDescription}>
         <div>
           <label>Description:</label>
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <Editor data={description} setDescription={setDescription} />
         </div>
         <div>
           <label>Order Number:</label>

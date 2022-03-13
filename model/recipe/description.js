@@ -18,7 +18,7 @@ const recipeDescriptionSchema = new Schema(
       type: Number,
     },
     description: {
-      type: String,
+      type: mongoose.Schema.Types.Mixed,
       required: true,
     },
   },

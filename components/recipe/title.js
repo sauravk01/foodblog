@@ -10,7 +10,13 @@ import {
   ImageUploadHandler,
 } from "../../utils/imageHandler/imageUploadHandler";
 
-const RecipeTitle = ({ subCategories, recipeValues, setRecipeValues }) => {
+const initialState = {
+  title: "",
+  subCategory: "",
+  themeTitleRecipe: "",
+};
+const RecipeTitle = ({ subCategories }) => {
+  const [recipeValues, setRecipeValues] = useState(initialState);
   const { state, dispatch } = useContext(RecipeContext);
   const { rTitle } = state;
   const { data: session } = useSession();

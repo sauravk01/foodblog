@@ -16,7 +16,7 @@ const RInstruction = () => {
   const { data: session } = useSession();
   const ref = useRef();
   const { rTitle, rInstructions } = state;
-  console.log("state", state);
+  // console.log("state", state);
   const createRecipeInstruction = async (e) => {
     e.preventDefault();
     const formData = new FormData();

@@ -3,16 +3,16 @@ import { useState } from "react/cjs/react.development";
 import RecipeDescription from "../../../components/recipe/RecipeDescription";
 import RInstructions from "../../../components/recipe/RecipeInstructions/RInstructions";
 import RecipeServes from "../../../components/recipe/RecipeServes/RecipeServes";
-import RecipeTitle from "../../../components/recipe/title";
+import RecipeTitle from "../../../components/recipe/title/index";
 import { RecipeProvider } from "../../../store/recipe/recipeGlobalState";
 import { getData } from "../../../utils/fetchData";
 
-const index = ({ subCategories }) => {
+const index = ({ SubCategories }) => {
   return (
     <>
       <RecipeProvider>
         <div>Recipe Page</div>
-        <RecipeTitle subCategories={subCategories} />
+        <RecipeTitle SubCategories={SubCategories} />
         <hr />
         <RecipeDescription />
         <hr />
@@ -38,11 +38,11 @@ export async function getServerSideProps(context) {
     };
   }
   let subCategories = await getData("sub-category");
-  // console.log("sub-category", subCategories);
+  console.log("sub-category", subCategories);
   return {
     props: {
       session,
-      subCategories: subCategories.subCategories,
+      SubCategories: subCategories.data,
     },
   };
 }

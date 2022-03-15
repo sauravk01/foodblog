@@ -31,8 +31,7 @@ const handler = nc({
     try {
       sessionProvider(req);
       recipeTitleValidation(req, res);
-      // console.log("request", req.body);
-
+      console.log("request", req.body);
       const url = `${staticResourceUrl}${req.file.filename}`;
 
       const newRecipe = new Recipe({
@@ -48,8 +47,59 @@ const handler = nc({
     } catch (err) {
       error(err, res);
     }
+  })
+  .get(async (req, res) => {
+    try {
+      console.log("req", req.body);
+      const data = Recipe.aggregate([
+        {
+          $match: { id: req.query },
+        },
+
+        {
+          $lookup: {
+            from: "recipedescriptions",
+            localField: "_id",
+            foreignField: "recipeId",
+            as: "descriptions",
+          },
+        },
+        {
+          $lookup: {
+            from: "recipeinstructions",
+            localField: "_id",
+            foreignField: "recipeId",
+            as: "instructions",
+          },
+        },
+
+        {
+          $lookup: {
+            from: "recipeserves",
+            localField: "_id",
+            foreignField: "recipeId",
+            as: "serves",
+          },
+        },
+        // ,{
+        //   $group : {
+
+        //   _id : null,
+        //    title: {$first : true},
+        //       content: {$first :true},
+        //       createdBy: {$first :true},
+        //       createdAt: {$first :true},
+        //       isOwner: { $eq : ['$createdBy', currentUser] },
+        //       answersStatus: {$first :true},
+        //         answers : {$push : $answer}
+        //     }
+        //   }
+      ]);
+      res.json({ data });
+    } catch (err) {
+      error(err, res);
+    }
   });
-// .get();
 
 // export default async (req, res) => {
 //   switch (req.method) {

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 
-function Editor({ data, setDescription }) {
+function Editor({ data, setState }) {
   const [editor, setEditor] = useState(null);
 
+  console.log("data", data);
   useEffect(() => initEditor(), []);
 
   const initEditor = () => {
@@ -20,7 +21,7 @@ function Editor({ data, setDescription }) {
     const SimpleImage = require("@editorjs/simple-image");
 
     let content = null;
-    if (data !== undefined) {
+    if (data !== undefined || null) {
       content = data;
     }
 
@@ -60,12 +61,11 @@ function Editor({ data, setDescription }) {
     e.preventDefault();
     let data = await editor.saver.save();
     console.log("data", data);
-    setDescription(data);
+    setState(data);
   };
 
   return (
     <div>
-      <h3 style={{ textAlign: "center" }}>Descriptions</h3>
       <button onClick={(e) => onSave(e)}>Save</button>
       <div id={"editorjs"} onChange={(e) => editor.onChange(e)}></div>
     </div>

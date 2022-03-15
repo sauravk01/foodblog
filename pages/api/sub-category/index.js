@@ -6,6 +6,7 @@ import {
 } from "../../../utils/validation/apiValidation";
 import { error } from "../../../utils/error/errorAPI";
 import SubCategory from "../../../model/sub-category";
+import { APIData } from "../../../utils/API/getData";
 
 dbConnect();
 
@@ -39,9 +40,7 @@ const createSubCategory = async (req, res) => {
 
 const getSubCategories = async (req, res) => {
   try {
-    const subCategories = await SubCategory.find();
-
-    res.json({ subCategories });
+    await APIData("all", SubCategory, res);
   } catch (err) {
     error(err, res);
   }

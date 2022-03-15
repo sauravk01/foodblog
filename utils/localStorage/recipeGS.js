@@ -9,6 +9,7 @@ export const settingLocalStorage = (name, value) => {
 export const gettingLocalStorage = (name, { dispatch, action }) => {
   //note name must be string
   if (!name) return;
+
   const value = JSON.parse(localStorage.getItem(name));
   //note dispatch must contain the dispatch method containing type and payload
   // console.log("name", name);

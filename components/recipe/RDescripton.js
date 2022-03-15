@@ -1,13 +1,17 @@
 import { useSession } from "next-auth/react";
 import { useRef, useState, useContext } from "react";
 import { ACTIONS } from "../../store/recipe/recipeActions";
-import { RecipeContext } from "../../store/recipe/recipeGlobalState";
-import { postData } from "../../utils/fetchData";
+import {
+  createRecipeDescriptionName,
+  RecipeContext,
+} from "../../store/recipe/recipeGlobalState";
+import { deleteData, postData } from "../../utils/fetchData";
 
 import {
   deleteImage,
   ImageUploadHandler,
 } from "../../utils/imageHandler/imageUploadHandler";
+import { clearingLocalStorage } from "../../utils/localStorage/recipeGS";
 import Editor from "../editor/EditorJS";
 
 const RDescripton = () => {
@@ -19,8 +23,15 @@ const RDescripton = () => {
   const ref = useRef();
   const { rTitle, rDescriptions } = state;
 
+  const handleDeleteDescription = async (description, session) => {
+    let id = description._id;
+    await deleteData(`recipe/description/${id}`, session.accessToken);
+  };
+  console.log("desc", rDescriptions);
+  console.log("session", session.accessToken);
   const createRecipeDescription = async (e) => {
     e.preventDefault();
+
     let descriptions = JSON.stringify(description.blocks);
     const formData = new FormData();
 
@@ -46,14 +57,43 @@ const RDescripton = () => {
     );
 
     console.log("res", res);
+    // console.log("dispatch", [...rDescriptions, res.newDescription]);
+    if (res.msg == "success") {
+      if (rDescriptions.length === 1) {
+        console.log("hiiii from here");
+        dispatch({
+          type: ACTIONS.RDescription,
+          payload: [
+            {
+              ...res.newDescription,
+            },
+          ],
+        });
+        await handleDeleteDescription(rDescriptions[0], session);
+      } else {
+        dispatch({
+          type: ACTIONS.RDescription,
+          payload: [
+            {
+              ...res.newDescription,
+            },
+          ],
+        });
+      }
+    }
   };
 
   return (
     <>
       <form onSubmit={createRecipeDescription}>
+        <h3 style={{ textAlign: "center" }}>Descriptions</h3>
         <div>
-          <label>Description:</label>
-          <Editor data={description} setDescription={setDescription} />
+          <Editor
+            data={
+              rDescriptions.length >= 1 ? rDescriptions[0].description : null
+            }
+            setState={setDescription}
+          />
         </div>
         <div>
           <label>Order Number:</label>

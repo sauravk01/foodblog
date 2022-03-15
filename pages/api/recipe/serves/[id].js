@@ -1,7 +1,7 @@
 import RecipeServes from "../../../../model/recipe/serves";
 import sessionProvider from "../../../../utils/sessionProvider";
 import { error } from "../../../../utils/error/errorAPI";
-
+import dbConnect from "../../../../utils/connectDB";
 dbConnect();
 
 export default async (req, res) => {
@@ -17,12 +17,13 @@ const UpdateServes = async (req, res) => {
     await sessionProvider(req);
     console.log(req.body);
 
-    const updateServe = RecipeServes.findByIdAndUpdate(req.query.id, {
-      ...req.body,
-    });
-    await updateServe.save();
+    await RecipeServes.updateOne(
+      { _id: req.query.id },
+      { $set: { ...req.body } }
+    );
+    const updateServe = await RecipeServes.find({ _id: req.query.id });
     res.json({
-      msg: "Success! updated serves.",
+      msg: "success",
       updateServe,
     });
   } catch (err) {

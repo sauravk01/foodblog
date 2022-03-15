@@ -1,5 +1,10 @@
 {
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js"
+  "/_document": "pages/_document.js",
+  "/api/recipe/serves/[id]": "pages/api/recipe/serves/[id].js",
+  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
+  "/create/recipe/[...params]": "pages/create/recipe/[...params].js",
+  "/api/recipe/[id]": "pages/api/recipe/[id].js",
+  "/api/sub-category": "pages/api/sub-category.js"
 }

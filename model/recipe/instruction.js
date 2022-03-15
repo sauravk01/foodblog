@@ -8,7 +8,7 @@ const recipeInstructionSchema = new Schema(
     recipeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Recipe",
-      required: true,
+      // required: true,
     },
     image: {
       type: String,

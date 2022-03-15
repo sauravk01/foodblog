@@ -1,28 +1,47 @@
+import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { ACTIONS } from "../../../store/recipe/recipeActions";
-import { RecipeContext } from "../../../store/recipe/recipeGlobalState";
+import {
+  createRecipeDescriptionName,
+  createRecipeInstructionName,
+  createRecipeServesName,
+  createRecipeStorageName,
+  RecipeContext,
+} from "../../../store/recipe/recipeGlobalState";
 import { postData, putData } from "../../../utils/fetchData";
+import { clearingLocalStorage } from "../../../utils/localStorage/recipeGS";
 
 const UpdateServes = () => {
+  const router = useRouter();
   const { state, dispatch } = useContext(RecipeContext);
   const { rTitle, rServes } = state;
-  const { numberOfServing, timeForPrepration, ingredients, specialEquipments } =
-    rServes;
+  const {
+    _id,
+    numberOfServing,
+    timeForPrepration,
+    ingredients,
+    specialEquipments,
+  } = rServes;
   const [serveNum, setServeNum] = useState(0);
   const [prepTimes, setPrepTimes] = useState([{ time: 0, title: "" }]);
   const [listIngredients, setListIngredients] = useState([
     { quantity: 0, unit: "", description: "" },
   ]);
+  const [id, setId] = useState("");
   const [specialEquipment, setSpecialEquipment] = useState("");
-  console.log("serves", rServes);
-  console.log("serveNum", serveNum);
-  console.log("tTitle", rTitle._id);
+  // console.log("res--->>>", rServes);·
 
+  useEffect(() => {
+    // if (rServes != {}) {
+    loadSavedData();
+    // }
+  }, []);
   const loadSavedData = () => {
     setServeNum(numberOfServing);
     setPrepTimes(timeForPrepration);
     setListIngredients(ingredients);
     setSpecialEquipment(specialEquipments);
+    setId(_id);
   };
 
   const handlePrepChange = (e, index) => {
@@ -38,7 +57,7 @@ const UpdateServes = () => {
     if (e.target.name === "quantity" || "description" || "unit") {
       let data = [...ingredients];
       data[index][e.target.name] = e.target.value;
-      setIngredients(data);
+      setListIngredients(data);
     }
   };
 
@@ -51,7 +70,7 @@ const UpdateServes = () => {
     }
     if (state == "ingredient") {
       object = { quantity: 0, unit: "", description: "" };
-      setIngredients([...ingredients, object]);
+      setListIngredients([...ingredients, object]);
     }
   };
 
@@ -64,27 +83,33 @@ const UpdateServes = () => {
     if (state === "ingredient") {
       let data = [...ingredients];
       data.splice(index, 1);
-      setIngredients(data);
+      setListIngredients(data);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await putData("recipe/serve/${rServes._id}", {
+    const res = await putData(`recipe/serves/${id}`, {
       numberOfServing: serveNum,
       timeForPrepration: [...prepTimes],
       ingredients: [...listIngredients],
       specialEquipments: specialEquipment,
       recipeId: rTitle._id,
     });
-    console.log("res", res);
-    if (res.msg == "Success! updated serves.") {
+    if (res.msg == "success.") {
+      console.log("res--->>>", res);
       dispatch({ type: ACTIONS.RServes, payload: { ...res.updateServe } });
     }
+    clearingLocalStorage(createRecipeStorageName);
+    clearingLocalStorage(createRecipeDescriptionName);
+    clearingLocalStorage(createRecipeServesName);
+    clearingLocalStorage(createRecipeInstructionName);
+    router.reload(window.location.pathname);
   };
   return (
     <>
-      <div>UpdateServes</div> <button onClick={loadSavedData}>Load Data</button>
+      <div>UpdateServes</div>
+      <button onClick={loadSavedData}>Load Data</button>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Number of Serving:</label>
@@ -171,7 +196,7 @@ const UpdateServes = () => {
             onChange={(e) => setSpecialEquipment(e.target.value)}
           />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit">Update Serve</button>
       </form>
     </>
   );

@@ -47,7 +47,7 @@ const getCategories = async (req, res) => {
         },
       },
     ]);
-    // console.log("categories", categories);
+    console.log("categories", categories);
     res.json({ categories });
   } catch (err) {
     error(err, res);

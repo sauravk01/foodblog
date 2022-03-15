@@ -21,7 +21,7 @@ const index = ({ categories }) => {
   //loading subcategories data
   useEffect(async () => {
     let res = await getData("sub-category");
-    setSubs(res.subCategories);
+    setSubs(res.data);
   }, [values]);
   console.log(subs);
 

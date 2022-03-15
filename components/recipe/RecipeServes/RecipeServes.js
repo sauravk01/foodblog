@@ -1,11 +1,21 @@
 import { RecipeContext } from "../../../store/recipe/recipeGlobalState";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import UpdateServes from "./UpdateServes";
 import CreateServes from "./CreateServes";
+import { ACTIONS } from "../../../store/recipe/recipeActions";
 
-const RecipeServes = () => {
-  const { state } = useContext(RecipeContext);
+const RecipeServes = ({ serves }) => {
+  const { state, dispatch } = useContext(RecipeContext);
   const { rServes } = state;
+  useEffect(() => {
+    if (serves) {
+      dispatch({
+        type: ACTIONS.RServes,
+        payload: { ...serves },
+      });
+      // console.log("Rserves", { ...serves });
+    }
+  }, []);
 
   return (
     <>

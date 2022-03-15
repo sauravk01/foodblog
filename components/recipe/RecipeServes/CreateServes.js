@@ -12,7 +12,7 @@ const CreateServes = () => {
     { quantity: 0, unit: "", description: "" },
   ]);
   const [specialEquipment, setSpecialEquipment] = useState("");
-  console.log("ingredients", ingredients);
+  // console.log("ingredients", ingredients);
 
   const handlePrepChange = (e, index) => {
     if (e.target.name === "title" || "time") {
@@ -22,7 +22,7 @@ const CreateServes = () => {
       setPrepTimes(data);
     }
   };
-  console.log("prepTime", ...prepTimes);
+  // console.log("prepTime", ...prepTimes);
 
   const handleIngredientChange = (e, index) => {
     if (e.target.name === "quantity" || "description" || "unit") {
@@ -74,6 +74,7 @@ const CreateServes = () => {
       dispatch({ type: ACTIONS.RServes, payload: { ...res.newServe } });
     }
   };
+
   return (
     <>
       <div>RecipeServes</div>

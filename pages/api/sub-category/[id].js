@@ -24,8 +24,8 @@ const editSubCategory = async (req, res) => {
   try {
     sessionProvider(req);
     const { title, category } = req.body;
-    checkTitle(title);
-    checkCategory(category);
+    checkTitle(title, res);
+    checkCategory(category, res);
     const updateSubCategory = await SubCategory.findByIdAndUpdate(
       req.query.id,
       {
@@ -33,8 +33,6 @@ const editSubCategory = async (req, res) => {
         title,
       }
     );
-
-    await updateSubCategory.save();
 
     res.json({
       msg: "sub-category updated",

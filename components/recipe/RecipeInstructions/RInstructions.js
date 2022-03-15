@@ -1,32 +1,40 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { ACTIONS } from "../../../store/recipe/recipeActions";
 import { RecipeContext } from "../../../store/recipe/recipeGlobalState";
 import RInstruction from "./RInstruction";
 
-const RInstructions = () => {
+const RInstructions = ({ instructions }) => {
   const { state, dispatch } = useContext(RecipeContext);
-  const { rTitle, rDescriptions, rServes } = state;
-  // console.log("desc", state.rDescriptions);
+  const { rTitle, rDescriptions, rServes, rInstructions } = state;
+  useEffect(() => {
+    if (instructions) {
+      dispatch({
+        type: ACTIONS.RInstruction,
+        payload: [...instructions],
+      });
+    }
+  }, []);
 
   return (
     <>
       <div>RecipeInstructions</div>
       <hr />
 
-      {rTitle._id && rDescriptions ? (
-        rDescriptions.map((rDes) => (
-          <div key={rDes._id}>
+      {rTitle._id && rInstructions ? (
+        rInstructions.map((inst) => (
+          <div key={inst._id}>
             <div>
-              <label>Description:</label>
-              {rDes.description}
+              <label>Instructions:</label>
+              {inst.instruction}
             </div>
             <div>
-              <label>RecipeId:</label>
-              {rDes.recipeId}
+              <label>id:</label>
+              {inst._id}
             </div>
           </div>
         ))
       ) : (
-        <h5>No Descriptions Yet</h5>
+        <h5>No Instructions Yet</h5>
       )}
       <hr />
       {rServes ? <RInstruction /> : <h5>Please submit the serves first</h5>}

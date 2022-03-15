@@ -1,29 +1,70 @@
+import Link from "next/link";
 import { useContext, useEffect } from "react";
 import { useState } from "react/cjs/react.development";
-import { RecipeContext } from "../../store/recipe/recipeGlobalState";
+import {
+  createRecipeDescriptionName,
+  RecipeContext,
+} from "../../store/recipe/recipeGlobalState";
+import { deleteData } from "../../utils/fetchData";
 import RDescripton from "./RDescripton";
+import { useSession } from "next-auth/react";
+import { clearingLocalStorage } from "../../utils/localStorage/recipeGS";
+import { ACTIONS } from "../../store/recipe/recipeActions";
 
-const RecipeDescription = () => {
-  const { state } = useContext(RecipeContext);
+const RecipeDescription = ({ descriptions }) => {
+  const { state, dispatch } = useContext(RecipeContext);
   const { rTitle, rDescriptions } = state;
-  // console.log("desc", state.rDescriptions);
   const [show, setShow] = useState(false);
-  console.log("load", show);
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (descriptions) {
+      dispatch({
+        type: ACTIONS.RDescription,
+        payload: [...descriptions],
+      });
+    }
+  }, []);
+  const handleDeleteDescription = async (des, session) => {
+    let id = des._id;
+
+    let res = await deleteData(`recipe/description/${id}`, session.accessToken);
+    console.log(res);
+    clearingLocalStorage(createRecipeDescriptionName);
+  };
+
   return (
     <>
       <div>RecipeDescriptions</div>
       <hr />
 
-      {rTitle._id && rDescriptions ? (
+      {rTitle._id && rDescriptions.length >= 1 ? (
         rDescriptions.map((rDes) => (
           <div key={rDes._id}>
             <div>
-              <label>Description:</label>
-              {rDes.description}
-            </div>
-            <div>
-              <label>RecipeId:</label>
-              {rDes.recipeId}
+              <label>DescriptionId:</label>
+              {rDes._id}
+              <Link href={`recipe/${rTitle._id}`}>
+                <button
+                  style={{
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                    backgroundColor: "skyblue",
+                  }}
+                >
+                  <a>Edit</a>
+                </button>
+              </Link>
+
+              <button
+                style={{
+                  marginLeft: "5px",
+                  cursor: "pointer",
+                  backgroundColor: "skyblue",
+                }}
+                onClick={(e) => handleDeleteDescription(rDes, session)}
+              >
+                delete
+              </button>
             </div>
           </div>
         ))

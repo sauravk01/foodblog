@@ -13,7 +13,7 @@ const RecipeServes = ({ serves }) => {
         type: ACTIONS.RServes,
         payload: { ...serves },
       });
-      // console.log("Rserves", { ...serves });
+      console.log("Rserves", { ...serves });
     }
   }, []);
 

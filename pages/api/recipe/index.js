@@ -41,7 +41,7 @@ const handler = nc({
       await newRecipe.save();
 
       res.json({
-        msg: "success",
+        msg: "success created",
         newRecipe,
       });
     } catch (err) {
@@ -50,12 +50,7 @@ const handler = nc({
   })
   .get(async (req, res) => {
     try {
-      console.log("req", req.body);
-      const data = Recipe.aggregate([
-        {
-          $match: { id: req.query },
-        },
-
+      const data = await Recipe.aggregate([
         {
           $lookup: {
             from: "recipedescriptions",
@@ -81,19 +76,6 @@ const handler = nc({
             as: "serves",
           },
         },
-        // ,{
-        //   $group : {
-
-        //   _id : null,
-        //    title: {$first : true},
-        //       content: {$first :true},
-        //       createdBy: {$first :true},
-        //       createdAt: {$first :true},
-        //       isOwner: { $eq : ['$createdBy', currentUser] },
-        //       answersStatus: {$first :true},
-        //         answers : {$push : $answer}
-        //     }
-        //   }
       ]);
       res.json({ data });
     } catch (err) {

@@ -25,10 +25,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/create/recipe/[...params]": [
+    "/testing": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/create/recipe/[...params].js"
+      "static/chunks/pages/testing.js"
     ]
   },
   "ampFirstPages": []

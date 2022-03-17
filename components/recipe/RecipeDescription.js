@@ -10,20 +10,25 @@ import RDescripton from "./RDescripton";
 import { useSession } from "next-auth/react";
 import { clearingLocalStorage } from "../../utils/localStorage/recipeGS";
 import { ACTIONS } from "../../store/recipe/recipeActions";
+import { useRouter } from "next/router";
 
 const RecipeDescription = ({ descriptions }) => {
+  const router = useRouter();
   const { state, dispatch } = useContext(RecipeContext);
   const { rTitle, rDescriptions } = state;
   const [show, setShow] = useState(false);
   const { data: session } = useSession();
   useEffect(() => {
     if (descriptions) {
+      console.log("description", ...descriptions);
+
       dispatch({
         type: ACTIONS.RDescription,
         payload: [...descriptions],
       });
     }
   }, []);
+
   const handleDeleteDescription = async (des, session) => {
     let id = des._id;
 
@@ -43,28 +48,37 @@ const RecipeDescription = ({ descriptions }) => {
             <div>
               <label>DescriptionId:</label>
               {rDes._id}
-              <Link href={`recipe/${rTitle._id}`}>
-                <button
-                  style={{
-                    marginLeft: "5px",
-                    cursor: "pointer",
-                    backgroundColor: "skyblue",
-                  }}
-                >
-                  <a>Edit</a>
-                </button>
-              </Link>
-
-              <button
-                style={{
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                  backgroundColor: "skyblue",
-                }}
-                onClick={(e) => handleDeleteDescription(rDes, session)}
-              >
-                delete
-              </button>
+              {router.pathname !== `/create/recipe/[...params]` ? (
+                <>
+                  <Link href={`recipe/${rTitle._id}`}>
+                    <button
+                      style={{
+                        marginLeft: "5px",
+                        cursor: "pointer",
+                        backgroundColor: "skyblue",
+                      }}
+                    >
+                      <a>Edit</a>
+                    </button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <span>
+                    <h5>Editing on progress</h5>
+                  </span>
+                  <button
+                    style={{
+                      marginLeft: "5px",
+                      cursor: "pointer",
+                      backgroundColor: "skyblue",
+                    }}
+                    onClick={(e) => handleDeleteDescription(rDes, session)}
+                  >
+                    delete
+                  </button>
+                </>
+              )}
             </div>
           </div>
         ))

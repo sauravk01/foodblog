@@ -1,3 +1,10 @@
+import {
+  createRecipeDescriptionName,
+  createRecipeInstructionName,
+  createRecipeServesName,
+  createRecipeStorageName,
+} from "../../store/recipe/recipeGlobalState";
+
 export const settingLocalStorage = (name, value) => {
   //note name must be string
   // To store data
@@ -25,4 +32,11 @@ export const clearingLocalStorage = (name) => {
   // note single object must be send
   // To clear a specific item
   localStorage.removeItem(name);
+};
+
+export const handleClearLocalRecipeStorage = () => {
+  clearingLocalStorage(createRecipeStorageName);
+  clearingLocalStorage(createRecipeDescriptionName);
+  clearingLocalStorage(createRecipeServesName);
+  clearingLocalStorage(createRecipeInstructionName);
 };

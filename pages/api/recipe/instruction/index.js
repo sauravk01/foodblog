@@ -6,7 +6,7 @@ import _ from "lodash";
 import upload from "../../../../utils/multer";
 
 import { recipeInstructionValidation } from "../../../../utils/validation/recipeValidation";
-import instruction from "../../../../model/recipe/instruction";
+import RecipeInstruction from "../../../../model/recipe/instruction";
 const staticResourceUrl = process.env.STATIC_RESOURCE_URL;
 dbConnect();
 
@@ -36,7 +36,7 @@ const handler = nc({
       console.log("instruction", req.body);
       const url = `${staticResourceUrl}${req.file.filename}`;
 
-      const newInstruction = new instruction({
+      const newInstruction = new RecipeInstruction({
         ...recipeInstruction,
         image: url,
       });

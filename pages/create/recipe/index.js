@@ -1,11 +1,11 @@
 import { getSession } from "next-auth/react";
-import { useState } from "react/cjs/react.development";
 import RecipeDescription from "../../../components/recipe/RecipeDescription";
 import RInstructions from "../../../components/recipe/RecipeInstructions/RInstructions";
 import RecipeServes from "../../../components/recipe/RecipeServes/RecipeServes";
 import RecipeTitle from "../../../components/recipe/title/index";
 import { RecipeProvider } from "../../../store/recipe/recipeGlobalState";
 import { getData } from "../../../utils/fetchData";
+import { handleClearLocalRecipeStorage } from "../../../utils/localStorage/recipeGS";
 
 const index = ({ SubCategories }) => {
   return (
@@ -20,6 +20,7 @@ const index = ({ SubCategories }) => {
         <hr />
         <RInstructions />
         <hr />
+        <button onClick={handleClearLocalRecipeStorage}>Done</button>
       </RecipeProvider>
     </>
   );
@@ -38,7 +39,7 @@ export async function getServerSideProps(context) {
     };
   }
   let subCategories = await getData("sub-category");
-  console.log("sub-category", subCategories);
+  // console.log("sub-category", subCategories);
   return {
     props: {
       session,

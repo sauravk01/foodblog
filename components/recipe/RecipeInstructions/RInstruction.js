@@ -1,19 +1,28 @@
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useRef, useState, useContext } from "react";
 import { ACTIONS } from "../../../store/recipe/recipeActions";
 import { RecipeContext } from "../../../store/recipe/recipeGlobalState";
-import { postData } from "../../../utils/fetchData";
+import { postData, putData } from "../../../utils/fetchData";
 import {
   deleteImage,
   ImageUploadHandler,
 } from "../../../utils/imageHandler/imageUploadHandler";
 
-const RInstruction = () => {
+const RInstruction = (props) => {
   const { state, dispatch } = useContext(RecipeContext);
-  const [instruction, setInstruction] = useState("");
-  const [images, setImages] = useState([]);
-  const [orderNumber, setOrderNumber] = useState(0);
+  const {
+    instruction,
+    setInstruction,
+    images,
+    setImages,
+    orderNumber,
+    setOrderNumber,
+    id,
+    setId,
+  } = props;
   const { data: session } = useSession();
+  const router = useRouter();
   const ref = useRef();
   const { rTitle, rInstructions } = state;
   // console.log("state", state);
@@ -31,19 +40,27 @@ const RInstruction = () => {
       formData.append("orderNumber", orderNumber);
     }
 
-    let res = await postData(
-      "recipe/instruction",
-      formData,
-      session.accessToken
-    );
+    let res;
+    if (id) {
+      res = await putData(
+        `recipe/instruction/${id}`,
+        formData,
+        session.accessToken
+      );
+      router.reload();
+      // console.log("res put", res);
+    }
+    if (!id) {
+      res = await postData("recipe/instruction", formData, session.accessToken);
+      if (res.msg == "success") {
+        dispatch({
+          type: ACTIONS.RInstruction,
+          payload: [...rInstructions, res.newInstruction],
+        });
+      }
+    }
 
     console.log("res", res);
-    if (res.msg == "success") {
-      dispatch({
-        type: ACTIONS.RInstruction,
-        payload: [...rInstructions, res.newInstruction],
-      });
-    }
   };
 
   return (
@@ -69,7 +86,7 @@ const RInstruction = () => {
           <label>Image:</label>
           <input
             type="file"
-            disabled={images.length === 1}
+            disabled={images && images.length === 1}
             onChange={(e) => ImageUploadHandler(e, { images, setImages })}
             ref={ref}
           />

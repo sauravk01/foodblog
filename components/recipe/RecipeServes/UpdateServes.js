@@ -100,11 +100,11 @@ const UpdateServes = () => {
       console.log("res--->>>", res);
       dispatch({ type: ACTIONS.RServes, payload: { ...res.updateServe } });
     }
-    clearingLocalStorage(createRecipeStorageName);
-    clearingLocalStorage(createRecipeDescriptionName);
-    clearingLocalStorage(createRecipeServesName);
-    clearingLocalStorage(createRecipeInstructionName);
-    router.reload(window.location.pathname);
+    // clearingLocalStorage(createRecipeStorageName);
+    // clearingLocalStorage(createRecipeDescriptionName);
+    // clearingLocalStorage(createRecipeServesName);
+    // clearingLocalStorage(createRecipeInstructionName);
+    router.push(`/create/recipe/${rTitle._id}`);
   };
   return (
     <>

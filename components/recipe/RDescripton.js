@@ -1,11 +1,12 @@
 import { useSession } from "next-auth/react";
-import { useRef, useState, useContext } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState, useContext } from "react";
 import { ACTIONS } from "../../store/recipe/recipeActions";
 import {
   createRecipeDescriptionName,
   RecipeContext,
 } from "../../store/recipe/recipeGlobalState";
-import { deleteData, postData } from "../../utils/fetchData";
+import { deleteData, postData, putData } from "../../utils/fetchData";
 
 import {
   deleteImage,
@@ -15,20 +16,27 @@ import { clearingLocalStorage } from "../../utils/localStorage/recipeGS";
 import Editor from "../editor/EditorJS";
 
 const RDescripton = () => {
+  const router = useRouter();
+
   const { state, dispatch } = useContext(RecipeContext);
   const [description, setDescription] = useState(null);
   const [images, setImages] = useState([]);
   const [orderNumber, setOrderNumber] = useState(0);
+  const [id, setId] = useState("");
   const { data: session } = useSession();
   const ref = useRef();
   const { rTitle, rDescriptions } = state;
 
-  const handleDeleteDescription = async (description, session) => {
-    let id = description._id;
-    await deleteData(`recipe/description/${id}`, session.accessToken);
-  };
-  console.log("desc", rDescriptions);
-  console.log("session", session.accessToken);
+  // const handleDeleteDescription = async (description, session) => {
+  //   let id = description._id;
+  //   await deleteData(`recipe/description/${id}`, session.accessToken);
+  // };
+  useEffect(() => {
+    if (rDescriptions[0]) setId(rDescriptions[0]._id || "");
+  }, []);
+
+  console.log("id", id);
+  // console.log("session", session.accessToken);
   const createRecipeDescription = async (e) => {
     e.preventDefault();
 
@@ -49,38 +57,28 @@ const RDescripton = () => {
     if (!orderNumber === 0) {
       formData.append("orderNumber", orderNumber);
     }
-
-    let res = await postData(
-      "recipe/description",
-      formData,
-      session.accessToken
-    );
-
-    console.log("res", res);
-    // console.log("dispatch", [...rDescriptions, res.newDescription]);
-    if (res.msg == "success") {
-      if (rDescriptions.length === 1) {
-        console.log("hiiii from here");
-        dispatch({
-          type: ACTIONS.RDescription,
-          payload: [
-            {
-              ...res.newDescription,
-            },
-          ],
-        });
-        await handleDeleteDescription(rDescriptions[0], session);
-      } else {
-        dispatch({
-          type: ACTIONS.RDescription,
-          payload: [
-            {
-              ...res.newDescription,
-            },
-          ],
-        });
-      }
+    let res;
+    if (id) {
+      res = await putData(
+        `recipe/description/${id}`,
+        formData,
+        session.accessToken
+      );
     }
+    if (!id) {
+      res = await postData("recipe/description", formData, session.accessToken);
+    }
+
+    dispatch({
+      type: ACTIONS.RDescription,
+      payload: [
+        {
+          ...res.newDescription,
+        },
+      ],
+    });
+
+    router.reload(window.location.pathname);
   };
 
   return (

@@ -1,9 +1,11 @@
+import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { ACTIONS } from "../../../store/recipe/recipeActions";
 import { RecipeContext } from "../../../store/recipe/recipeGlobalState";
 import { postData } from "../../../utils/fetchData";
 
 const CreateServes = () => {
+  const router = useRouter();
   const { state, dispatch } = useContext(RecipeContext);
   const { rTitle, rServes } = state;
   const [serveNum, setServeNum] = useState(0);
@@ -12,7 +14,7 @@ const CreateServes = () => {
     { quantity: 0, unit: "", description: "" },
   ]);
   const [specialEquipment, setSpecialEquipment] = useState("");
-  // console.log("ingredients", ingredients);
+  // console.log("router", router);
 
   const handlePrepChange = (e, index) => {
     if (e.target.name === "title" || "time") {
@@ -73,6 +75,7 @@ const CreateServes = () => {
     if (res.msg == "Success! created a new serve.") {
       dispatch({ type: ACTIONS.RServes, payload: { ...res.newServe } });
     }
+    router.push(`/create/recipe/${rTitle._id}`);
   };
 
   return (

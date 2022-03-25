@@ -126,7 +126,7 @@ export async function getServerSideProps(context) {
     };
   }
   let res = await getData("category");
-  let categories = res.categories;
+  let categories = res.data;
   return {
     props: {
       categories,

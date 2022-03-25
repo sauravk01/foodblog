@@ -1,15 +1,11 @@
+import { Button, IconButton, Stack, TextField } from "@mui/material";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { ACTIONS } from "../../../store/recipe/recipeActions";
-import {
-  createRecipeDescriptionName,
-  createRecipeInstructionName,
-  createRecipeServesName,
-  createRecipeStorageName,
-  RecipeContext,
-} from "../../../store/recipe/recipeGlobalState";
-import { postData, putData } from "../../../utils/fetchData";
-import { clearingLocalStorage } from "../../../utils/localStorage/recipeGS";
+import { RecipeContext } from "../../../store/recipe/recipeGlobalState";
+import { putData } from "../../../utils/fetchData";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const UpdateServes = () => {
   const router = useRouter();
@@ -98,7 +94,7 @@ const UpdateServes = () => {
     });
     if (res.msg == "success.") {
       console.log("res--->>>", res);
-      dispatch({ type: ACTIONS.RServes, payload: { ...res.updateServe } });
+      dispatch({ type: ACTIONS.RServes, payload: { ...res.data } });
     }
     // clearingLocalStorage(createRecipeStorageName);
     // clearingLocalStorage(createRecipeDescriptionName);
@@ -109,94 +105,114 @@ const UpdateServes = () => {
   return (
     <>
       <div>UpdateServes</div>
-      <button onClick={loadSavedData}>Load Data</button>
+      <Button variant={"outlined"} size={"small"} onClick={loadSavedData}>
+        Load Data
+      </Button>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Number of Serving:</label>
-          <input
-            type="number"
-            value={serveNum}
-            onChange={(e) => setServeNum(e.target.value)}
-          />
-        </div>
-        <div>
+        <TextField
+          label={"Number of Serving"}
+          variant={"standard"}
+          type="number"
+          value={serveNum}
+          onChange={(e) => setServeNum(e.target.value)}
+        />
+
+        <Stack>
           <label>Time for Prepration:</label>
           {prepTimes.map((prepTime, index) => {
             return (
-              <div key={index}>
-                <label>Time:</label>
-                <input
+              <Stack key={index}>
+                <TextField
+                  label={"Time"}
+                  variant={"standard"}
                   type="number"
                   name="time"
                   value={prepTime.time}
                   onChange={(e) => handlePrepChange(e, index)}
                 />
-                <label>Title:</label>
-                <input
+                <TextField
+                  label={"Title"}
+                  variant={"standard"}
                   type="text"
                   name="title"
                   value={prepTime.title}
                   onChange={(e) => handlePrepChange(e, index)}
                 />
-                <span
-                  style={{ cursor: "pointer", marginLeft: "5px" }}
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  sx={{ marginLeft: "5px" }}
+                  component="span"
                   onClick={() => removeField(index, "prepTime")}
                 >
-                  X
-                </span>
-              </div>
+                  <DeleteForeverIcon />
+                </IconButton>
+              </Stack>
             );
           })}
 
-          <button onClick={(e) => addFields(e, "prepTime")}>Add More</button>
-        </div>
+          <IconButton onClick={(e) => addFields(e, "prepTime")}>
+            <AddCircleOutlineIcon />
+          </IconButton>
+        </Stack>
         <div>
           <label>Ingredients:</label>
           {listIngredients.map((ingredient, index) => {
             return (
               <div key={index}>
                 <label>Quantity:</label>
-                <input
+                <TextField
+                  label={"Quantity"}
                   type="number"
                   name="quantity"
                   value={ingredient.quantity}
                   onChange={(e) => handleIngredientChange(e, index)}
                 />
                 <label>Unit:</label>
-                <input
+                <TextField
+                  label={"Unit"}
                   type="text"
                   name="unit"
                   value={ingredient.unit}
                   onChange={(e) => handleIngredientChange(e, index)}
                 />
                 <label>Description:</label>
-                <input
+                <TextField
+                  label={"Description"}
                   type="text"
                   name="description"
                   value={ingredient.description}
                   onChange={(e) => handleIngredientChange(e, index)}
                 />
-                <span
-                  style={{ cursor: "pointer", marginLeft: "5px" }}
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  sx={{ marginLeft: "5px" }}
+                  component="span"
                   onClick={() => removeField(index, "ingredient")}
                 >
-                  X
-                </span>
+                  <DeleteForeverIcon />
+                </IconButton>
               </div>
             );
           })}
 
-          <button onClick={(e) => addFields(e, "ingredient")}>Add More</button>
+          <IconButton onClick={(e) => addFields(e, "ingredient")}>
+            <AddCircleOutlineIcon />
+          </IconButton>
         </div>
         <div>
           <label>Special Equipments:</label>
-          <input
+          <TextField
+            label={"Special Equipments"}
             type="text"
             value={specialEquipment}
             onChange={(e) => setSpecialEquipment(e.target.value)}
           />
         </div>
-        <button type="submit">Update Serve</button>
+        <Button variant={"contained"} size={"small"} type="submit">
+          Update Serve
+        </Button>
       </form>
     </>
   );

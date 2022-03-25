@@ -1,63 +1,29 @@
 import dbConnect from "../../../utils/connectDB";
 import sessionProvider from "../../../utils/sessionProvider";
-import {
-  checkCategory,
-  checkTitle,
-} from "../../../utils/validation/apiValidation";
 import { error } from "../../../utils/error/errorAPI";
 import SubCategory from "../../../model/sub-category";
+import { APIDeleteItem } from "../../../utils/API/APIDeleteItem";
+import {
+  ncValidators,
+  postNEdit,
+} from "../../../utils/API/withNextConnect/functions";
+import nc from "next-connect";
+import upload from "../../../utils/multer";
 
 dbConnect();
 
-export default async (req, res) => {
-  switch (req.method) {
-    case "PUT":
-      await editSubCategory(req, res);
-      break;
-    case "DELETE":
-      await deleteSubCategory(req, res);
-      break;
-  }
-};
+const handler = nc(ncValidators)
+  .use(upload.single("image"))
+  .put(async (req, res) => {
+    try {
+      recipeInstructionValidation(req, res);
+      await postNEdit(req, res, RecipeInstruction);
+    } catch (err) {
+      error(err, res);
+    }
+  })
+  .delete(async (req, res) => {
+    await APIDeleteItem(req, SubCategory, res);
+  });
 
-const editSubCategory = async (req, res) => {
-  try {
-    sessionProvider(req);
-    const { title, category } = req.body;
-    checkTitle(title, res);
-    checkCategory(category, res);
-    const updateSubCategory = await SubCategory.findByIdAndUpdate(
-      req.query.id,
-      {
-        category,
-        title,
-      }
-    );
-
-    res.json({
-      msg: "sub-category updated",
-      subCategory: {
-        ...updateSubCategory._doc,
-        title,
-        category,
-      },
-    });
-  } catch (err) {
-    error(err, res);
-  }
-};
-
-const deleteSubCategory = async (req, res) => {
-  try {
-    sessionProvider(req);
-    const id = req.query.id;
-    console.log(id);
-    //find the product in that category and delete them all
-    //code not written
-
-    await SubCategory.findByIdAndDelete(id);
-    return res.json({ msg: "success" });
-  } catch (err) {
-    return res.status(500).json({ err: err.message });
-  }
-};
+export default handler;

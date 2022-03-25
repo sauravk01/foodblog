@@ -16,7 +16,7 @@ const index = ({ category }) => {
 
   useEffect(async () => {
     let res = await getData("category", session.accessToken);
-    setCategories(res.categories);
+    setCategories(res.data);
   }, [title]);
 
   const handleSubmit = async (e) => {
@@ -90,7 +90,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       session,
-      category: category.categories,
+      category: category.data,
     },
   };
 }

@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import { clearingLocalStorage } from "../../utils/localStorage/recipeGS";
 import { ACTIONS } from "../../store/recipe/recipeActions";
 import { useRouter } from "next/router";
+import { Button } from "@mui/material";
 
 const RecipeDescription = ({ descriptions }) => {
   const router = useRouter();
@@ -39,9 +40,6 @@ const RecipeDescription = ({ descriptions }) => {
 
   return (
     <>
-      <div>RecipeDescriptions</div>
-      <hr />
-
       {rTitle._id && rDescriptions.length >= 1 ? (
         rDescriptions.map((rDes) => (
           <div key={rDes._id}>
@@ -67,16 +65,18 @@ const RecipeDescription = ({ descriptions }) => {
                   <span>
                     <h5>Editing on progress</h5>
                   </span>
-                  <button
-                    style={{
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    sx={{
+                      width: "200px",
+                      marginTop: "15px",
                       marginLeft: "5px",
-                      cursor: "pointer",
-                      backgroundColor: "skyblue",
                     }}
                     onClick={(e) => handleDeleteDescription(rDes, session)}
                   >
                     delete
-                  </button>
+                  </Button>
                 </>
               )}
             </div>
@@ -87,7 +87,9 @@ const RecipeDescription = ({ descriptions }) => {
       )}
       <hr />
       {rTitle ? (
-        <button onClick={() => setShow(!show)}>Show Editor</button>
+        <Button variant={"outlined"} onClick={() => setShow(!show)}>
+          Show Editor
+        </Button>
       ) : (
         <h5>Please submit the title first</h5>
       )}

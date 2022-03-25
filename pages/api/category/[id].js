@@ -3,6 +3,7 @@ import Category from "../../../model/category";
 import sessionProvider from "../../../utils/sessionProvider";
 import { error } from "../../../utils/error/errorAPI";
 import { APIDeleteItem } from "../../../utils/API/APIDeleteItem";
+import { postNEdit } from "../../../utils/API/withNextConnect/functions";
 
 dbConnect();
 
@@ -19,19 +20,7 @@ export default async (req, res) => {
 
 const updateCategory = async (req, res) => {
   try {
-    sessionProvider(req);
-    let id = req.query.id;
-    let title = req.body.title;
-
-    const categoryUpdate = await Category.findByIdAndUpdate(id, { title });
-
-    res.json({
-      msg: "Category updated",
-      category: {
-        ...categoryUpdate._doc,
-        title,
-      },
-    });
+    await postNEdit(req, res, Category);
   } catch (err) {
     error(err, res);
   }

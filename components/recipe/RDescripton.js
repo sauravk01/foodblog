@@ -1,3 +1,4 @@
+import { Button, TextField } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState, useContext } from "react";
@@ -35,7 +36,7 @@ const RDescripton = () => {
     if (rDescriptions[0]) setId(rDescriptions[0]._id || "");
   }, []);
 
-  console.log("id", id);
+  // console.log("description.blocks", description.blocks);
   // console.log("session", session.accessToken);
   const createRecipeDescription = async (e) => {
     e.preventDefault();
@@ -73,7 +74,7 @@ const RDescripton = () => {
       type: ACTIONS.RDescription,
       payload: [
         {
-          ...res.newDescription,
+          ...res.data,
         },
       ],
     });
@@ -91,26 +92,31 @@ const RDescripton = () => {
               rDescriptions.length >= 1 ? rDescriptions[0].description : null
             }
             setState={setDescription}
+            readonly={false}
           />
         </div>
         <div>
-          <label>Order Number:</label>
-          <input
+          <TextField
+            label={"Order Number"}
             type="number"
             value={orderNumber}
             onChange={(e) => setOrderNumber(e.target.value)}
+            variant={"standard"}
           />
         </div>
         <div>
-          <label>Image:</label>
-          <input
+          <TextField
+            label={"Image"}
             type="file"
             disabled={images.length === 1}
             onChange={(e) => ImageUploadHandler(e, { images, setImages })}
             ref={ref}
+            variant={"standard"}
           />
         </div>
-        <button type="submit">Submit</button>
+        <Button variant={"contained"} type="submit" disabled={!description}>
+          Submit
+        </Button>
         <div>
           {images &&
             images.map((img, index) => (

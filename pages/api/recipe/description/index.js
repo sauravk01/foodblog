@@ -9,6 +9,10 @@ import {
   recipeTitleValidation,
 } from "../../../../utils/validation/recipeValidation";
 import RecipeDescription from "../../../../model/recipe/description";
+import {
+  ncValidators,
+  postNEdit,
+} from "../../../../utils/API/withNextConnect/functions";
 const staticResourceUrl = process.env.STATIC_RESOURCE_URL;
 dbConnect();
 
@@ -18,42 +22,24 @@ export const config = {
   },
 };
 
-const handler = nc({
-  onError: (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).end("Something broke");
-  },
-  onNoMatch: (req, res, next) => {
-    res.status(404).end("Page is not found");
-  },
-})
+const handler = nc(ncValidators)
   .use(upload.single("image"))
   .post(async (req, res) => {
     const recipeDescription = JSON.parse(JSON.stringify(req.body));
+
     const blocks = JSON.parse(recipeDescription.description);
     console.log("description", blocks);
     const description = {
-      time: recipeDescription.time,
-      blocks: blocks,
-      version: recipeDescription.version,
+      description: {
+        time: recipeDescription.time,
+        blocks: blocks,
+        version: recipeDescription.version,
+      },
     };
+
     try {
-      sessionProvider(req);
       recipeDescriptionValidation(req, res);
-
-      const url = `${staticResourceUrl}${req.file.filename}`;
-
-      const newDescription = new RecipeDescription({
-        ...recipeDescription,
-        description,
-        image: url,
-      });
-      await newDescription.save();
-
-      res.json({
-        msg: "success created",
-        newDescription,
-      });
+      await postNEdit(req, res, RecipeDescription, description);
     } catch (err) {
       error(err, res);
     }

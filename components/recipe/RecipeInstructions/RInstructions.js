@@ -34,9 +34,6 @@ const RInstructions = ({ instructions }) => {
 
   return (
     <>
-      <div>RecipeInstructions</div>
-      <hr />
-
       {rTitle._id && rInstructions ? (
         rInstructions.map((inst) => (
           <div key={inst._id}>

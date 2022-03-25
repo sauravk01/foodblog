@@ -18,13 +18,13 @@ const createServe = async (req, res) => {
     await sessionProvider(req);
     // console.log(req.body);
 
-    const newServe = new RecipeServes({
+    const data = new RecipeServes({
       ...req.body,
     });
-    await newServe.save();
+    await data.save();
     res.json({
       msg: "Success! created a new serve.",
-      newServe,
+      data,
     });
   } catch (err) {
     error(err, res);

@@ -1,8 +1,11 @@
+import { IconButton, TextField, Button, Stack } from "@mui/material";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { ACTIONS } from "../../../store/recipe/recipeActions";
 import { RecipeContext } from "../../../store/recipe/recipeGlobalState";
 import { postData } from "../../../utils/fetchData";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const CreateServes = () => {
   const router = useRouter();
@@ -73,99 +76,124 @@ const CreateServes = () => {
     });
     console.log("res", res);
     if (res.msg == "Success! created a new serve.") {
-      dispatch({ type: ACTIONS.RServes, payload: { ...res.newServe } });
+      dispatch({ type: ACTIONS.RServes, payload: { ...res.data } });
     }
     router.push(`/create/recipe/${rTitle._id}`);
   };
 
   return (
     <>
-      <div>RecipeServes</div>
+      {/* <div>RecipeServes</div> */}
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Number of Serving:</label>
-          <input
-            type="number"
-            value={serveNum}
-            onChange={(e) => setServeNum(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Time for Prepration:</label>
+        <TextField
+          variant={"standard"}
+          label={"Number of Serving"}
+          type="number"
+          value={serveNum}
+          onChange={(e) => setServeNum(e.target.value)}
+        />
+
+        <Stack mt={1}>
           {prepTimes.map((prepTime, index) => (
-            <div key={index}>
-              <label>Time:</label>
-              <input
+            <Stack key={index} direction={"row"}>
+              <TextField
+                variant={"standard"}
+                label={"Time for Prepration"}
                 type="number"
                 name="time"
                 value={prepTime.time}
                 onChange={(e) => handlePrepChange(e, index)}
               />
-              <label>Title:</label>
-              <input
+              <TextField
+                variant={"standard"}
+                label={"Title"}
                 type="text"
                 name="title"
                 value={prepTime.title}
                 onChange={(e) => handlePrepChange(e, index)}
               />
-              <span
-                style={{ cursor: "pointer", marginLeft: "5px" }}
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                sx={{ marginLeft: "5px" }}
+                component="span"
                 onClick={() => removeField(index, "prepTime")}
               >
-                X
-              </span>
-            </div>
+                <DeleteForeverIcon />
+              </IconButton>
+            </Stack>
           ))}
+        </Stack>
+        <IconButton
+          variant={"outlined"}
+          size={"small"}
+          onClick={(e) => addFields(e, "prepTime")}
+        >
+          <AddCircleOutlineIcon />
+        </IconButton>
+        <Stack mt={1}>Ingredients:</Stack>
+        {ingredients.map((ingredient, index) => {
+          return (
+            <Stack key={index} direction={"row"}>
+              <TextField
+                label={"Quantity"}
+                type="number"
+                name="quantity"
+                variant={"standard"}
+                value={ingredient.quantity}
+                onChange={(e) => handleIngredientChange(e, index)}
+              />
+              <TextField
+                label={"Unit"}
+                type="text"
+                name="unit"
+                variant={"standard"}
+                value={ingredient.unit}
+                onChange={(e) => handleIngredientChange(e, index)}
+              />
+              <TextField
+                sx={{ width: "600px" }}
+                label={"Description"}
+                type="text"
+                name="description"
+                variant={"standard"}
+                value={ingredient.description}
+                onChange={(e) => handleIngredientChange(e, index)}
+              />
 
-          <button onClick={(e) => addFields(e, "prepTime")}>Add More</button>
-        </div>
-        <div>
-          <label>Ingredients:</label>
-          {ingredients.map((ingredient, index) => {
-            return (
-              <div key={index}>
-                <label>Quantity:</label>
-                <input
-                  type="number"
-                  name="quantity"
-                  value={ingredient.quantity}
-                  onChange={(e) => handleIngredientChange(e, index)}
-                />
-                <label>Unit:</label>
-                <input
-                  type="text"
-                  name="unit"
-                  value={ingredient.unit}
-                  onChange={(e) => handleIngredientChange(e, index)}
-                />
-                <label>Description:</label>
-                <input
-                  type="text"
-                  name="description"
-                  value={ingredient.description}
-                  onChange={(e) => handleIngredientChange(e, index)}
-                />
-                <span
-                  style={{ cursor: "pointer", marginLeft: "5px" }}
-                  onClick={() => removeField(index, "ingredient")}
-                >
-                  X
-                </span>
-              </div>
-            );
-          })}
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                sx={{ marginLeft: "5px" }}
+                component="span"
+                onClick={() => removeField(index, "ingredient")}
+              >
+                <DeleteForeverIcon />
+              </IconButton>
+            </Stack>
+          );
+        })}
+        <IconButton
+          variant={"outlined"}
+          size={"small"}
+          onClick={(e) => addFields(e, "ingredient")}
+        >
+          <AddCircleOutlineIcon />
+        </IconButton>
 
-          <button onClick={(e) => addFields(e, "ingredient")}>Add More</button>
-        </div>
-        <div>
-          <label>Special Equipments:</label>
-          <input
+        <Stack>
+          <TextField
+            label={"Special Equipments"}
             type="text"
+            variant={"standard"}
             value={specialEquipment}
             onChange={(e) => setSpecialEquipment(e.target.value)}
           />
-        </div>
-        <button type="submit">Submit</button>
+        </Stack>
+
+        <Button variant={"contained"} type="submit">
+          Submit
+        </Button>
       </form>
     </>
   );

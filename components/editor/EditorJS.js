@@ -1,9 +1,12 @@
+import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function Editor({ data, setState }) {
+function Editor({ data, setState, readonly }) {
   const [editor, setEditor] = useState(null);
 
-  console.log("data", data);
+  // console.log("data", data);
+  // console.log("readonly", readonly);
+
   useEffect(() => initEditor(), []);
 
   const initEditor = () => {
@@ -21,9 +24,15 @@ function Editor({ data, setState }) {
     const SimpleImage = require("@editorjs/simple-image");
 
     let content = null;
+    // let pause = null;
     if (data !== undefined || null) {
       content = data;
     }
+
+    // if (readonly === true) {
+    //   // pause = readonly;
+    //   editor.readOnly.toggle();
+    // }
 
     setEditor(
       new EditorJS({
@@ -50,8 +59,10 @@ function Editor({ data, setState }) {
           delimiter: Delimiter,
           simpleImage: SimpleImage,
         },
-
         data: content,
+        minHeight: 0,
+        readOnly: readonly || false,
+        maxWidth: "auto",
       })
     );
     console.log("editor", editor);
@@ -66,8 +77,16 @@ function Editor({ data, setState }) {
 
   return (
     <div>
-      <button onClick={(e) => onSave(e)}>Save</button>
-      <div id={"editorjs"} onChange={(e) => editor.onChange(e)}></div>
+      {!readonly && (
+        <Button variant={"contained"} onClick={(e) => onSave(e)}>
+          Save
+        </Button>
+      )}
+      <div
+        id={"editorjs"}
+        onChange={(e) => editor.onChange(e)}
+        className={`ce-toolbar__content ce-block__content cdx-block`}
+      ></div>
     </div>
   );
 }

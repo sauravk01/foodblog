@@ -3,6 +3,7 @@ import Category from "../../../model/category";
 import sessionProvider from "../../../utils/sessionProvider";
 import { checkTitle } from "../../../utils/validation/apiValidation";
 import { error } from "../../../utils/error/errorAPI";
+import { postNEdit } from "../../../utils/API/withNextConnect/functions";
 
 dbConnect();
 
@@ -20,14 +21,8 @@ export default async (req, res) => {
 const createCategory = async (req, res) => {
   try {
     await sessionProvider(req);
-    const { title } = req.body;
-    checkTitle(title);
-    const newCategory = new Category({ title });
-    await newCategory.save();
-    res.json({
-      msg: "Success! created a new category.",
-      newCategory,
-    });
+    checkTitle(req.body.title);
+    await postNEdit(req, res, Category);
   } catch (err) {
     error(err, res);
   }
@@ -37,7 +32,7 @@ const getCategories = async (req, res) => {
   try {
     // Category.find();
     // Implementing $lookup for category collection and finding the results
-    const categories = await Category.aggregate([
+    const data = await Category.aggregate([
       {
         $lookup: {
           from: "subcategories",
@@ -47,8 +42,9 @@ const getCategories = async (req, res) => {
         },
       },
     ]);
-    console.log("categories", categories);
-    res.json({ categories });
+    console.log("res category", data);
+
+    res.json({ data });
   } catch (err) {
     error(err, res);
   }

@@ -1,9 +1,12 @@
+import { Button, IconButton, TextField } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useRef, useState, useContext } from "react";
 import { ACTIONS } from "../../../store/recipe/recipeActions";
 import { RecipeContext } from "../../../store/recipe/recipeGlobalState";
 import { postData, putData } from "../../../utils/fetchData";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+
 import {
   deleteImage,
   ImageUploadHandler,
@@ -52,10 +55,10 @@ const RInstruction = (props) => {
     }
     if (!id) {
       res = await postData("recipe/instruction", formData, session.accessToken);
-      if (res.msg == "success") {
+      if (res.msg == "success  created") {
         dispatch({
           type: ACTIONS.RInstruction,
-          payload: [...rInstructions, res.newInstruction],
+          payload: [...rInstructions, res.data],
         });
       }
     }
@@ -66,32 +69,34 @@ const RInstruction = (props) => {
   return (
     <>
       <form onSubmit={createRecipeInstruction}>
-        <div>
-          <label>Instructions:</label>
-          <input
-            type="text"
-            value={instruction}
-            onChange={(e) => setInstruction(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Order Number:</label>
-          <input
-            type="number"
-            value={orderNumber}
-            onChange={(e) => setOrderNumber(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Image:</label>
-          <input
-            type="file"
-            disabled={images && images.length === 1}
-            onChange={(e) => ImageUploadHandler(e, { images, setImages })}
-            ref={ref}
-          />
-        </div>
-        <button type="submit">Submit</button>
+        <TextField
+          variant={"standard"}
+          label={"Instructions"}
+          type="text"
+          value={instruction}
+          onChange={(e) => setInstruction(e.target.value)}
+        />
+
+        <TextField
+          variant={"standard"}
+          label={"Order Number"}
+          type="number"
+          value={orderNumber}
+          onChange={(e) => setOrderNumber(e.target.value)}
+        />
+
+        <TextField
+          variant={"standard"}
+          label={"Image"}
+          type="file"
+          disabled={images && images.length === 1}
+          onChange={(e) => ImageUploadHandler(e, { images, setImages })}
+          ref={ref}
+        />
+
+        <Button variant={"contained"} type="submit">
+          Submit
+        </Button>
         <div>
           {images &&
             images.map((img, index) => (
@@ -102,13 +107,16 @@ const RInstruction = (props) => {
                   src={img.url ? img.url : URL.createObjectURL(img)}
                   alt=""
                 />
-
-                <span
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  sx={{ marginLeft: "5px" }}
+                  component="span"
                   style={{ cursor: "pointer" }}
                   onClick={() => deleteImage(index, { images, setImages })}
                 >
-                  X
-                </span>
+                  <DeleteForeverIcon />
+                </IconButton>
               </div>
             ))}
         </div>

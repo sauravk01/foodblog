@@ -8,6 +8,10 @@ import { recipeDescriptionValidation } from "../../../../utils/validation/recipe
 import RecipeDescription from "../../../../model/recipe/description";
 import { getData } from "../../../../utils/API/getData";
 import { APIDeleteItem } from "../../../../utils/API/APIDeleteItem";
+import {
+  ncValidators,
+  postNEdit,
+} from "../../../../utils/API/withNextConnect/functions";
 const staticResourceUrl = process.env.STATIC_RESOURCE_URL;
 dbConnect();
 
@@ -17,17 +21,10 @@ export const config = {
   },
 };
 
-const handler = nc({
-  onError: (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).end("Something broke");
-  },
-  onNoMatch: (req, res, next) => {
-    res.status(404).end("Page is not found");
-  },
-})
+const handler = nc(ncValidators)
   .use(upload.single("image"))
   .delete(async (req, res) => {
+    console.log(req.query);
     await APIDeleteItem(req, RecipeDescription, res);
   })
   .put(async (req, res) => {
@@ -41,21 +38,9 @@ const handler = nc({
       version: recipeDescription.version,
     };
     try {
-      sessionProvider(req);
       recipeDescriptionValidation(req, res);
 
-      const url = `${staticResourceUrl}${req.file.filename}`;
-
-      await RecipeDescription.updateOne(
-        { _id: req.query.id },
-        {
-          $set: { ...recipeDescription, description, image: url },
-        }
-      );
-
-      res.json({
-        msg: "success",
-      });
+      await postNEdit(req, res, RecipeDescription, description);
     } catch (err) {
       error(err, res);
     }

@@ -1,3 +1,4 @@
+import { Button, Stack, TextField } from "@mui/material";
 import Multiselect from "multiselect-react-dropdown";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -97,9 +98,9 @@ const RecipeTitle = ({ SubCategories, recipe }) => {
     if (res.msg == "success created") {
       dispatch({
         type: ACTIONS.RTitle,
-        payload: { ...res.newRecipe, selectedSubs: selectedSubs },
+        payload: { ...res.data, selectedSubs: selectedSubs },
       });
-      setId(res.newRecipe._id);
+      setId(res.data._id);
     }
     if (res.msg == "success") {
       clearingLocalStorage(createRecipeStorageName);
@@ -122,67 +123,76 @@ const RecipeTitle = ({ SubCategories, recipe }) => {
   return (
     <>
       <form onSubmit={createRecipeItemTitle}>
-        <div>
-          <label htmlFor="title">Title:</label>
-          <input
+        <Stack>
+          <TextField
+            label="Title"
             id="title"
             type="text"
             name="title"
             value={title || rTitle.title}
             onChange={handleChange}
+            variant={"standard"}
+            margin={"dense"}
           />
-        </div>
-        <div>
-          <label htmlFor="subCategory">sub-categories:</label>
-          <Multiselect
-            displayValue="title"
-            onRemove={onRemove}
-            onSelect={onSelect}
-            options={[...SubCategories]}
-            selectedValues={selectedSubs || rTitle.selectedSubs}
-          />
-        </div>
-        <div>
-          <label>Reciep theme title:</label>
-          <input
+
+          <div style={{ marginTop: "15px" }}>
+            <label htmlFor="subCategory">sub-categories:</label>
+            <Multiselect
+              displayValue="title"
+              onRemove={onRemove}
+              onSelect={onSelect}
+              options={[...SubCategories]}
+              selectedValues={selectedSubs || rTitle.selectedSubs}
+            />
+          </div>
+
+          <TextField
+            label={"Reciep theme title"}
             id="themeTitleRecipe"
             type="text"
             name="themeTitleRecipe"
             value={themeTitleRecipe || rTitle.themeTitleRecipe}
             onChange={handleChange}
+            variant={"standard"}
+            margin={"dense"}
           />
-        </div>
-        <div>
-          <label>Image:</label>
-          <input
+
+          <TextField
+            label="Single Image"
             type="file"
             onChange={(e) => ImageUploadHandler(e, { images, setImages })}
             ref={ref}
+            variant={"standard"}
+            sx={{ marginBottom: "2px" }}
           />
-        </div>
-        <div>
-          {images &&
-            images.map((img, index) => (
-              <div key={index}>
-                <img
-                  key={index}
-                  style={{ width: "100px" }}
-                  src={img.url ? img.url : URL.createObjectURL(img)}
-                  alt=""
-                />
+          <div>
+            {images &&
+              images.map((img, index) => (
+                <div key={index}>
+                  <img
+                    key={index}
+                    style={{ width: "100px" }}
+                    src={img.url ? img.url : URL.createObjectURL(img)}
+                    alt=""
+                  />
 
-                <span
-                  style={{ cursor: "pointer" }}
-                  onClick={() => deleteImage(index, { images, setImages })}
-                >
-                  X
-                </span>
-              </div>
-            ))}
-        </div>
-        <button type="submit">
-          {rTitle.title ? "Update recipe title" : "Create recipe title"}
-        </button>
+                  <span
+                    style={{ cursor: "pointer" }}
+                    onClick={() => deleteImage(index, { images, setImages })}
+                  >
+                    X
+                  </span>
+                </div>
+              ))}
+          </div>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{ width: "200px", marginTop: "15px" }}
+          >
+            {rTitle.title ? "Update recipe title" : "Create recipe title"}
+          </Button>
+        </Stack>
       </form>
     </>
   );

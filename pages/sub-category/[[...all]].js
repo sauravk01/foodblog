@@ -6,7 +6,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import LayOutItems from "../../components/LayOutItems";
 import { useSession } from "next-auth/react";
 
-export default function subs({ recipes }) {
+export default function subs({ data }) {
   const { data: session } = useSession();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
@@ -16,7 +16,7 @@ export default function subs({ recipes }) {
       <Paper elevation={0} sx={{ textAlign: "center", width: "100vw" }}>
         <Stack sx={{ marginX: "auto" }}>
           <LayOutItems
-            items={recipes}
+            items={data}
             matches={matches}
             matches2={matches2}
             editLink={session ? "create/recipe" : "recipe"}
@@ -30,18 +30,31 @@ export default function subs({ recipes }) {
   );
 }
 export async function getServerSideProps(context) {
-  const id = context.query.all[0];
+  console.log("context", context);
+  let data;
+  console.log("query", context.query.all);
+
+  if (context.resolvedUrl == "/sub-category") {
+    const allData = await getData("sub-category");
+    data = allData.data;
+  }
+  // if (context.query.all[1]) {
+  //   const id = context.query.all[0];
+  //   console.log("id", context.query);
+  //   const recipes = await getData("recipe");
+  //   data = await recipes.data.filter(({ subCategories }) =>
+  //     subCategories.some((sId) => sId === id)
+  //   );
+  // }
+
   // let subCategories = await getData("sub-category");
-  const recipes = await getData("recipe");
+
   //only given subs
-  const data = await recipes.data.filter(({ subCategories }) =>
-    subCategories.some((sId) => sId === id)
-  );
 
   return {
     props: {
       // subCategories: subCategories.data,
-      recipes: data,
+      data: data,
     },
   };
 }

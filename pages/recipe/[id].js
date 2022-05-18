@@ -19,7 +19,7 @@ import Editor from "../../components/editor/EditorJS";
 import { useEffect, useState } from "react";
 import Fraction from "../../components/Fraction";
 const testing = ({ recipe }) => {
-  console.log("recipe", recipe);
+  // console.log("recipe", recipe);
   const {
     title,
     subCategories,
@@ -100,7 +100,7 @@ const testing = ({ recipe }) => {
     <Stack>
       <img src={image} alt={title} />
 
-      <Editor data={descriptions[0].description} readonly={true} />
+      <Editor data={descriptions[0].description || null} readonly={true} />
     </Stack>
   );
   const servesSection = (
@@ -192,7 +192,7 @@ const testing = ({ recipe }) => {
       </Stack>
     </Stack>
   );
-  console.log("descriptions[0]", serves);
+  // console.log("descriptions[0]", serves);
   return (
     <Grid container spacing={2} sx={{ marginX: "auto", width: "100vw" }}>
       <Grid item xs={12} md={8}>
@@ -216,13 +216,19 @@ const testing = ({ recipe }) => {
 
 export default testing;
 export async function getServerSideProps(context) {
-  let recipes = await getData("recipe");
-
+  let recipes = await getData(`recipe/${context.query.id}`);
+  let subCategories = await getData("sub-category");
+  // let subs = await recipes.data[0].subCategories.filter((sub) =>
+  //   subCategories.some((sId) => sId === sub._id)
+  // );
+  console.log("recipes", recipes);
+  // console.log("subs", subs);
   // let recipe = recipes.data.filter((recipe) => recipe._id == query);
 
   return {
     props: {
-      recipe: recipes.data[recipes.data.length - 1],
+      recipe: recipes.data[0],
+      // subs,
     },
   };
 }

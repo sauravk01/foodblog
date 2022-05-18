@@ -2,7 +2,11 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/create/recipe": "pages/create/recipe.js",
+  "/api/sub-category": "pages/api/sub-category.js",
+  "/recipe": "pages/recipe.js",
+  "/api/recipe": "pages/api/recipe.js",
+  "/sub-category/[[...all]]": "pages/sub-category/[[...all]].js",
   "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
-  "/api/sub-category": "pages/api/sub-category.js"
+  "/api/recipe/[id]": "pages/api/recipe/[id].js",
+  "/recipe/[id]": "pages/recipe/[id].js"
 }

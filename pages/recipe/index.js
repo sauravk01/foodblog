@@ -12,7 +12,6 @@ import React from "react";
 import { getData } from "../../utils/fetchData";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import NavBar from "../../components/Navbar/NavBar";
 import LayOutItems from "../../components/LayOutItems";
 import { useSession } from "next-auth/react";
 
